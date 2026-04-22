@@ -80,3 +80,7 @@ py demo_enhancement.py
 ## Course
 
 **BCS613B — Computer Vision** (VTU, CSE program).
+
+## Written report (for Word)
+
+A three-page, paste-ready report is in `Project_Report_BCS613B.txt` (open in Notepad, copy all, paste into Microsoft Word, then set Times New Roman 12 pt and fill in your name and register number in the header line).

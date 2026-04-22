@@ -1,0 +1,73 @@
+Project Report: Shape Recognition Using Morphology, Chain Codes, and Minimum-Distance Classification
+BCS613B – Computer Vision (Visvesvaraya Technological University)
+Name: [Your name]        Roll / Reg. No.: [         ]        Date: April 2026
+
+--------------------------------------------------------------------------------
+NOTE FOR MICROSOFT WORD: Paste this entire file. Set font to Times New Roman, 12 pt, line spacing 1.15, normal margins. Replace bracketed fields with your details. The length is intended to run about three pages; if your program requires strict page count, adjust spacing slightly.
+
+================================================================================
+1. INTRODUCTION
+================================================================================
+
+Computer vision is concerned with processing and interpreting image data so that machines can measure structure in scenes. This project implements a small but complete “recognition” pipeline: given a two-dimensional image that contains a single simple foreground object on a black background, the system assigns one of three labels: disk, square, or equilateral triangle. The work is designed to match the BCS613B Computer Vision curriculum: morphological image processing, boundary following with Freeman chain codes, prototype-based pattern classification (minimum distance rule), and supplementary material on image enhancement and color/segmentation utilities.
+
+The main scientific idea is to avoid hand-crafted rules in pixel space. Instead, the closed boundary of the object is converted into a compact numerical description, and classification is done by comparing that description to class averages (prototypes) learned from training data. A secondary geometric measure, boundary circularity, is added to reduce confusion between shape classes when independent noise distorts the chain-code pattern.
+
+The implementation language is Python 3, using OpenCV for contour extraction and morphological operations, NumPy for vector algebra, and Matplotlib for generating figures. All source code, requirements, and figures are version-controlled in a public GitHub repository (https://github.com/Bukenkere24/Computer-vision-project) for reproducibility and for submission.
+
+================================================================================
+2. SYLLABUS MAPPING AND LEARNING OUTCOMES
+================================================================================
+
+The project aligns directly with Module 5 of the prescribed syllabus: mathematical morphology (preliminaries, erosion, dilation, opening, closing) is used only as a practical tool to clean binary regions; the boundary of the object is then traversed conceptually to obtain a direction sequence (chain code); and classification follows the “minimum distance to class prototypes” rule described under pattern classification by prototype matching. Feature extraction in the form of a normalized histogram of chain directions and a single boundary-based scalar (circularity) is consistent with the “boundary and shape description” thread of the course. Module 1 (linear filtering) and Module 3 (segmentation, noise) are supported by a separate enhancement demonstration. Module 4 (color models) is supported by a helper that performs HSV thresholding and morphological post-processing, should the user later extend the project to color images.
+
+In terms of the Activity-Based / Practical learning component of the syllabus, the project addresses both suggested strands in software form: (i) point operations and spatial-domain filtering (histogram equalization, median, Gaussian) for enhancement and denoising; and (ii) shape analysis through segmentation, morphology, and classification, implemented end-to-end on binary synthetic data. All scripts can be run from a single top-level command so that the experiment, all graphs, the enhancement image, and small sanity tests execute in one batch.
+
+================================================================================
+3. SYSTEM DESIGN AND METHODOLOGY
+================================================================================
+
+3.1  Data generation
+A synthetic image generator creates binary pictures of a filled circle (disk), an axis-aligned square, and a filled equilateral triangle with random scale, small translation, and light salt-and-pepper noise. This avoids the need for external benchmark datasets while still providing variability. The data set is split by class into training and test sets (default: thirty training and ten test samples per class).
+
+3.2  Preprocessing: morphological opening and closing
+The binary image is first cleaned with morphological opening to remove small white speckles, then closing to fill small gaps, using elliptical structuring elements. This step corresponds to erosion and dilation in sequence as taught under morphological image processing, and it stabilizes the external contour that will be used for features.
+
+3.3  Boundary, chain code, and feature vector
+The largest external contour is found with standard OpenCV routines. The contour is treated as a closed polyline. Consecutive vertex differences are decomposed into eight-neighbor unit steps, and each step is mapped to a Freeman 8-direction code. The frequency of the eight possible directions is accumulated into a normalized histogram, which forms an eight-dimensional probability mass vector. An additional feature is the circularity measure 4·π·A / P^2, where A is the contour area and P is the perimeter, clipped to the interval [0,1]. A perfect circle has circularity near 1, while a triangle is distinctly lower, which helps disambiguate border cases. The final feature vector is nine-dimensional: the eight chain-code bins concatenated with circularity.
+
+3.4  Classifier: minimum distance to prototypes
+For each of the three classes, the training feature vectors are averaged, yielding one prototype per class. At test time, the Euclidean distance from the test feature vector to each prototype is computed; the predicted label is the class of the closest prototype. This is the standard minimum distance classifier in feature space, matching the syllabus’s emphasis on prototype matching. Evaluation metrics include per-sample distances and overall test-set accuracy, and a confusion matrix is plotted for presentation.
+
+3.5  Optional modules for demonstration
+Image enhancement is demonstrated in a four-panel figure comparing the noisy input to histogram equalization, median filtering, and Gaussian smoothing. A second utility implements HSV in-range thresholding and morphological post-processing, intended for future work with real color images of cut-out shapes.
+
+3.6  Reproducibility
+Dependencies are listed in requirements.txt. The entry script run_all.py installs these packages, runs the main experiment (saving output/summary.png), rebuilds the figures in the figures/ folder (pipeline overview, prototype fingerprints, confusion matrix, roundness by class, sample results), runs the enhancement demo, and runs a small chain-code sanity test. The same tasks can be run step by step with run_experiment.py, generate_figures.py, and demo_enhancement.py. The public repository is: https://github.com/Bukenkere24/Computer-vision-project
+
+================================================================================
+4. RESULTS AND OUTPUT ARTIFACTS
+================================================================================
+
+On the default settings (thirty training and ten test images per class, light salt-and-pepper noise, fixed random seed for repeatability), the test partition achieves one hundred percent accuracy: every test object is assigned to the same class as its label. The console log lists, for each test item, the true class, the predicted class, a pass/fail flag, and the distance to the winning prototype, which is useful for explaining borderline cases. The generated confusion matrix in figures/03_confusion_matrix.png shows only diagonal entries, consistent with the numeric accuracy. The prototype visualization in figures/02_prototype_fingerprints.png illustrates how the average chain-direction histogram and average circularity differ between disk, square, and triangle, making the role of the minimum-distance rule transparent. The pipeline diagram (figures/01_pipeline_overview.png) is suitable for a one-slide overview, while figures/04_roundness_by_class.png supports the claim that circularity carries discriminative information. The enhancement comparison (figures/06_enhancement_filters.png) is independent of the classifier and documents the ABL material on filters and point operations.
+
+It should be stated clearly that these results are on controlled synthetic data. Real photographs with lighting variation, multiple objects, and perspective would require pre-segmentation (for example, HSV-based masking with the provided helper) and possibly additional invariances in the feature set; that is left as an extension.
+
+================================================================================
+5. CONCLUSION AND SCOPE FOR FUTURE WORK
+================================================================================
+
+The project delivers a working end-to-end system that maps the BCS613B topics of morphology, chain codes, and minimum-distance classification into executable code, with clear figures and a single command to repeat the full study. The design is modular: chain-code extraction, morphology, feature assembly, and the classifier are in separate source files, which supports maintenance and viva questions on each block. Future improvements could add rotation-invariant features (for example, Fourier descriptors of the boundary) or a live webcam pipeline using the color-segmentation module, while keeping the same high-level story.
+
+================================================================================
+REFERENCES
+================================================================================
+
+[1] R. Szeliski, Computer Vision: Algorithms and Applications, 2nd ed., Springer, 2022. (Syllabus Textbook-1)
+[2] R. C. Gonzalez, R. E. Woods, and S. L. Eddins, Digital Image Processing, 4th ed., Pearson, 2019. (Syllabus Textbook-2 — morphological and shape material)
+[3] D. A. Forsyth and J. Ponce, Computer Vision: A Modern Approach, 2nd ed., Pearson, 2015. (Syllabus reference)
+[4] OpenCV documentation, https://docs.opencv.org/ (contour and morphological API)
+
+================================================================================
+END OF REPORT
+================================================================================
