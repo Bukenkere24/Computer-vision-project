@@ -12,6 +12,20 @@
 
 ## How to run
 
+**Everything at once (install, experiment, all graphs, enhancement demo, tests):**
+
+```text
+py run_all.py
+```
+
+If dependencies are already installed:
+
+```text
+py run_all.py --skip-install
+```
+
+### Run parts separately
+
 ```text
 py -m pip install -r requirements.txt
 py run_experiment.py
