@@ -44,8 +44,11 @@ def main() -> None:
     med = median_denoise(g, 5)
     gsmooth = gaussian_smooth(g, 5)
 
-    out = os.path.join(_ROOT, "output", "enhancement_demo.png")
-    os.makedirs(os.path.dirname(out), exist_ok=True)
+    out_dir = os.path.join(_ROOT, "output")
+    os.makedirs(out_dir, exist_ok=True)
+    out = os.path.join(out_dir, "enhancement_demo.png")
+    out_fig = os.path.join(_ROOT, "figures", "06_enhancement_filters.png")
+    os.makedirs(os.path.dirname(out_fig), exist_ok=True)
 
     import matplotlib.pyplot as plt
 
@@ -63,8 +66,10 @@ def main() -> None:
     fig.suptitle("BCS613B: enhancement and denoising (ABL)")
     plt.tight_layout()
     plt.savefig(out, dpi=140)
+    plt.savefig(out_fig, dpi=140)
     plt.close()
     print("Wrote", out)
+    print("Wrote", out_fig)
 
 
 if __name__ == "__main__":

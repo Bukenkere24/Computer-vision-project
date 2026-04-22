@@ -1,0 +1,27 @@
+What each diagram is (for your presentation)
+
+01_pipeline_overview.png
+  One picture of the whole story: image -> clean outline -> follow the border
+  and count directions -> turn into numbers -> pick the closest "average" shape.
+
+02_prototype_fingerprints.png
+  What the program learned: left = how often each of 8 directions appears on
+  the border (per class). Right = "roundness" of the outline (extra number).
+
+03_confusion_matrix.png
+  Rows = true shape, columns = what the program guessed. Big numbers on the
+  diagonal = good; off-diagonal = mistakes.
+
+04_roundness_by_class.png
+  Training shapes: disks tend to be "rounder" than squares and triangles.
+  This is why that extra number helps tell a messy circle from a triangle.
+
+05_sample_results.png
+  A few training images and a few test images with true label vs guess.
+
+06_enhancement_filters.png
+  From the ABL / enhancement part: noisy image vs histogram equalize vs
+  median vs Gaussian blur (not the main classifier, but easy to show).
+
+To redraw all 01-05:  py generate_figures.py
+To redraw 06:        py demo_enhancement.py

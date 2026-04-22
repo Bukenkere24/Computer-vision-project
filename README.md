@@ -17,13 +17,20 @@ py -m pip install -r requirements.txt
 py run_experiment.py
 ```
 
-Optional: save a small figure of train/test samples and accuracy:
+**Graphs for slides (saved under `figures/`, see `figures/ABOUT.txt`):**
+
+```text
+py generate_figures.py
+py demo_enhancement.py
+```
+
+Optional: save a one-off summary of train/test samples:
 
 ```text
 py run_experiment.py --out output/summary.png
 ```
 
-Optional (ABL — enhancement & filtering):
+Optional (ABL — enhancement & filtering; also updates `figures/06_enhancement_filters.png`):
 
 ```text
 py demo_enhancement.py

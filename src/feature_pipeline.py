@@ -71,3 +71,7 @@ def features_from_images(
         feats.append(r.feature)
         msgs.append(r.message)
     return np.vstack(feats), msgs
+
+
+def feature_details_from_images(images: list) -> list[FeatureResult]:
+    return [binary_image_to_feature(im) for im in images]
